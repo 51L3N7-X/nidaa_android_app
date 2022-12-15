@@ -35,6 +35,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -69,16 +70,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //    final Emitter.Listener listener = new Emitter.Listener() {
-//        @Override
-//        public void call(Object... args) {
-//            System.out.println(args[0]);
-//        }
-//    };
     private static final String TAG = "MyActivity";
 
 
-//    LinearLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,23 +106,17 @@ public class MainActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
                 } else {
                     Toast.makeText(MainActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 }
             }
         });
         String channelId = "fcm_default_channel";
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (Objects.equals(notificationManager.getNotificationChannel(channelId).getId(), channelId)) {
-                Log.e(TAG, "test");
-            }
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Orders Notifications",
-                    NotificationManager.IMPORTANCE_HIGH);
+
+
+            NotificationChannel channel = new NotificationChannel(channelId, "Orders Notifications", NotificationManager.IMPORTANCE_HIGH);
             channel.enableVibration(true);
             channel.enableLights(true);
             channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
@@ -240,6 +228,20 @@ public class MainActivity extends AppCompatActivity {
 //        layout.addView(view);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences sharedPreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE);
+        String restaurant_name = sharedPreferences.getString("restaurant_name", null);
+        String username = sharedPreferences.getString("username", null);
+        String password = sharedPreferences.getString("password", null);
+//        Log.e("t" , username);
+        if (restaurant_name != null && username != null && password != null) {
+            startActivity(new Intent(MainActivity.this, MainActivity2.class));
+        }
+    }
+
+
     private class LoginPost extends AsyncTask<String, Void, StringBuilder> {
         @Override
         protected StringBuilder doInBackground(String... data) {
@@ -286,29 +288,56 @@ public class MainActivity extends AppCompatActivity {
                 super.onPostExecute(stringBuilder);
 //                Toast.makeText(MainActivity.this, "done", Toast.LENGTH_SHORT).show();
                 Toast.makeText(MainActivity.this, stringBuilder.toString(), Toast.LENGTH_LONG).show();
+                SharedPreferences sharedpreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                JSONObject data = null;
+                JSONArray subscribeTo = null;
                 try {
-                    SharedPreferences sharedpreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE);
-                    JSONObject data = new JSONObject(stringBuilder.toString());
-                    JSONArray subscribeTo = (JSONArray) data.getJSONArray("receive");
-                    int length = subscribeTo.length();
-                    for (int i = 0; i < length; i++) {
-                        FirebaseMessaging.getInstance().subscribeToTopic(subscribeTo.get(i).toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(MainActivity.this, "can't login in", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            }
-                        });
-                    }
-                    Intent intent = new Intent(MainActivity.this, MainActivity2.class);
-                    startActivity(intent);
-
+                    data = new JSONObject(stringBuilder.toString());
+                    subscribeTo = (JSONArray) data.getJSONArray("receive");
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.e("JSON", "error");
                 }
+                int length = subscribeTo.length();
+                for (int i = 0; i < length; i++) {
+                    String sub = null;
+                    try {
+                        sub = subscribeTo.get(i).toString();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    int finalI = i;
+                    JSONObject finalData = data;
+                    String finalSub = sub;
+                    FirebaseMessaging.getInstance().subscribeToTopic(sub).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(MainActivity.this, "can't login in", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            if (finalI == 2) {
+                                try {
+                                    editor.putInt("sub_length", length);
+                                    editor.putString("restaurant_name", finalData.get("restaurant_name").toString());
+                                    editor.putString("username", finalData.get("username").toString());
+                                    editor.putString("password", finalData.get("password").toString());
+                                    editor.putString("sub" + finalI, finalSub);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+                                startActivity(intent);
+                                finish();
+                                Log.e("test", "sub" + finalI);
+                                editor.apply();
+                            }
+                        }
+
+                    });
+                }
+
+
             } else {
                 Toast.makeText(MainActivity.this, "can't login in", Toast.LENGTH_SHORT).show();
             }

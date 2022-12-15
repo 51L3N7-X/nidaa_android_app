@@ -14,14 +14,14 @@
         android:layout_marginTop="40dp"
         android:orientation="vertical">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/muli_black"
             android:text="Login As :"
             android:textAllCaps="true"
             android:textColor="?android:textColorPrimary"
-            android:textSize="20dp"></TextView>
+            android:textSize="20dp"></com.google.android.material.textview.MaterialTextView>
 
         <RadioGroup
             android:id="@+id/login_as"
@@ -68,7 +68,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/restaurant_name"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="resturant_name"
@@ -95,7 +94,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/username"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="username"
@@ -122,7 +120,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="password"
@@ -137,6 +134,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+
                     android:layout_height="match_parent"
                     android:fontFamily="@font/muli_black"
                     android:inputType="textPassword"
@@ -148,7 +146,7 @@
 
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/login_btn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -157,7 +155,7 @@
             android:padding="16dp"
             android:text="LOGIN">
 
-        </com.google.android.material.button.MaterialButton>
+        </Button>
 
 
     </LinearLayout>

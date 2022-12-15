@@ -9,24 +9,40 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 
-import com.example.myapplication.MainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.w3c.dom.Text;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+    private View view;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
     // [START receive_message]
     @Override
@@ -40,7 +56,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
                 scheduleJob();
@@ -53,9 +68,40 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
+//            Handler handler = new Handler(Looper.getMainLooper());
+//            handler.post(new Runnable() {
+//                public void run() {
+//                    Log.e("t", "test test etsdtetet");
+//                Toast.makeText(getApplicationContext(), "FCM!!", Toast.LENGTH_SHORT).show();
+//                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//
+//                    View view = inflater.inflate(R.layout.card, null);
+//                    View MainViwe = inflater.inflate(R.layout.activity_main, null);
+//                    LinearLayout layout = (LinearLayout) MainViwe.findViewById(R.id.container);
+//                    TextView order = view.findViewById(R.id.order);
+//                    TextView tableNumber = view.findViewById(R.id.textView);
+//                    Button done = view.findViewById(R.id.done);
+//
+//                    order.setText(remoteMessage.getNotification().getBody() );
+//                    order.setText(remoteMessage.getNotification().getTitle());
+//                    done.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            layout.removeView(view);
+//                        }
+//                    });
+//                    layout.addView(view);
+////                    addCard(remoteMessage.getNotification().getBody() , remoteMessage.getNotification().getTitle());
+//                }
+//            });
+            Intent intent = new Intent("message");
+            intent.putExtra("order", remoteMessage.getNotification().getBody());
+            intent.putExtra("table" , remoteMessage.getNotification().getTitle());
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             String notificationBody = remoteMessage.getNotification().getBody();
             String notificationTitle = remoteMessage.getNotification().getTitle();
+
             if (remoteMessage.getNotification().getBody() != null) {
                 sendNotification(notificationBody, notificationTitle);
             }
@@ -136,6 +182,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+    private void addCard(String name, String table) {
+
     }
 
     public static class MyWorker extends Worker {
