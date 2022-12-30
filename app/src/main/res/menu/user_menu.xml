@@ -3,5 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/log_out"
-        android:title="LOG OUT" />
+        android:title="@string/log_out"
+        />
 </menu>

@@ -1,63 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <com.google.android.material.card.MaterialCardView
-            android:theme="@style/Theme.Material3.DayNight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="10dp">
+style="@style/Widget.Material3.CardView.Elevated"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp">
+      <RelativeLayout
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/order"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="110dp"
-                    android:text="Order"
-                    android:textColor="@android:color/holo_purple"
-                    android:textFontWeight="1000"
-                    android:textSize="30dp" />
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingBottom="20dp"
+          android:paddingTop="20dp"
+          android:paddingLeft="10dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/done"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentRight="false"
-                    android:layout_marginStart="21dp"
-                    android:text="done" />
+          <TextView
+              android:id="@+id/table"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:fontFamily="@font/muli_black"
+              android:paddingTop="10dp"
+              android:singleLine="true"
+              android:text="Table 10"
+              android:textAppearance="?attr/textAppearanceTitleLarge" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="4dp"
-                    android:text="طاولة 50"
-                    android:textSize="30dp" />
+          <TextView
+              android:id="@+id/order"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="4dp"
+              android:layout_toEndOf="@id/table"
+              android:fontFamily="@font/muli_black"
+              android:paddingTop="10dp"
+              android:text="@string/order"
+              android:textAppearance="?attr/textAppearanceTitleLarge"
+              android:textColor="@android:color/holo_red_dark" />
+
+          <Button
+              android:id="@+id/done"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentEnd="true"
+              android:layout_marginEnd="6dp"
+              android:fontFamily="@font/muli_black"
+              android:text="@string/done" />
+
+      </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:theme="@style/Theme.Material3.DayNight"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="10dp"-->
+<!--            app:cardCornerRadius="10dp"-->
+<!--            app:cardElevation="10dp">-->
+
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="10dp">-->
+
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:id="@+id/order"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentEnd="true"-->
+<!--                    android:layout_marginEnd="188dp"-->
+<!--                    android:text="Order "-->
+<!--                    android:textColor="@android:color/holo_purple"-->
+<!--                    android:textFontWeight="1000"-->
+<!--                    android:textSize="30dp" />-->
+
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:id="@+id/done"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentStart="true"-->
+<!--                    android:layout_alignParentRight="false"-->
+<!--                    android:layout_marginStart="290dp"-->
+<!--                    android:text="done" />-->
+
+<!--                <com.google.android.material.textview.MaterialTextView-->
+<!--                    android:id="@+id/textView"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    android:text="table 50"-->
+<!--                    android:textSize="30dp" />-->
 
 
-
-               
-            </RelativeLayout>
+<!--            </RelativeLayout>-->
 
 
-        </com.google.android.material.card.MaterialCardView>
-    </RelativeLayout>
+<!--        </com.google.android.material.card.MaterialCardView>-->
+<!--    </RelativeLayout>-->
 
 
 

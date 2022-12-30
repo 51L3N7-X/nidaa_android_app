@@ -18,10 +18,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/muli_black"
-            android:text="Login As :"
+            android:text="@string/login_as"
             android:textAllCaps="true"
             android:textColor="?android:textColorPrimary"
-            android:textSize="20dp"></com.google.android.material.textview.MaterialTextView>
+            android:textSize="20sp"
+            android:layout_gravity="start">
+
+        </com.google.android.material.textview.MaterialTextView>
 
         <RadioGroup
             android:id="@+id/login_as"
@@ -34,11 +37,11 @@
                 android:id="@+id/kitchen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:fontFamily="@font/muli_black"
                 android:padding="16dp"
-                android:text="Kitchen"
-                android:textSize="16dp">
+                android:text="@string/kitchen"
+                android:textSize="16sp">
 
             </com.google.android.material.radiobutton.MaterialRadioButton>
 
@@ -51,11 +54,11 @@
                 android:id="@+id/waiter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:fontFamily="@font/muli_black"
                 android:padding="16dp"
-                android:text="Waiter"
-                android:textSize="16dp">
+                android:text="@string/waiter"
+                android:textSize="16sp">
 
             </com.google.android.material.radiobutton.MaterialRadioButton>
         </RadioGroup>
@@ -70,8 +73,8 @@
                 android:id="@+id/restaurant_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="resturant_name"
-                android:hint="Restaurant Name"
+                android:autofillHints="restaurant_name"
+                android:hint="@string/restaurant_name"
                 app:boxStrokeWidthFocused="2dp"
                 app:counterEnabled="true"
                 app:counterMaxLength="15"
@@ -97,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="username"
-                android:hint="UserName"
+                android:hint="@string/username"
                 app:boxStrokeWidthFocused="2dp"
                 app:counterEnabled="true"
                 app:counterMaxLength="20"
@@ -123,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="password"
-                android:hint="Password"
+                android:hint="@string/password"
                 app:boxStrokeWidthFocused="2dp"
                 app:counterEnabled="true"
                 app:counterMaxLength="20"
@@ -153,7 +156,7 @@
             android:layout_marginTop="40dp"
             android:fontFamily="@font/muli_black"
             android:padding="16dp"
-            android:text="LOGIN">
+            android:text="@string/login">
 
         </Button>
 

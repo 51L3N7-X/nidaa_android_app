@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/drawable-anydpi-v24/notification.xml" value="0.169" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2535" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2535" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/drawable/radio_normal.xml" value="0.328" />
@@ -12,11 +13,14 @@
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/font/font.xml" value="2.18125" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/activity_main.xml" value="0.27717391304347827" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/activity_main2.xml" value="0.271985494106981" />
-        <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/card.xml" value="0.2679022746419545" />
+        <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/card.xml" value="0.33" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/content_main.xml" value="0.271985494106981" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/content_main2.xml" value="0.271985494106981" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/fragment_second2.xml" value="0.271985494106981" />
-        <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/login.xml" value="0.21251109139307897" />
+        <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/loading_dialog.xml" value="0.33" />
+        <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/login.xml" value="0.33" />
+        <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/login_dialog.xml" value="0.25" />
+        <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/layout/logout_dialog.xml" value="0.2736212056434374" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/menu/user_menu.xml" value="0.2736212056434374" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2535" />
         <entry key="..\:/Users/AbdullahSH/AndroidStudioProjects/MyApplication3/app/src/main/res/xml/network_security_config.xml" value="0.15989583333333332" />
