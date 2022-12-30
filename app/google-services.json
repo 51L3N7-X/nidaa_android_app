@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:510883799923:android:8358fa5719819a2b5f1b06",
+        "mobilesdk_app_id": "1:510883799923:android:406b76fc5373d0795f1b06",
         "android_client_info": {
-          "package_name": "com.example.myapplication"
+          "package_name": "com.nidaa.app"
         }
       },
       "oauth_client": [

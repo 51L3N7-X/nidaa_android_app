@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">نداء</string>
+    <string name="login_as">تسجيل كـ</string>
+    <string name="kitchen">المطبخ</string>
+    <string name="waiter">النادل</string>
+    <string name="restaurant_name">اسم المطعم</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="password">كلمة المرور</string>
+    <string name="login">تسجيل</string>
+    <string name="done">تم</string>
+    <string name="order">طلب</string>
+    <string name="embers">جمر</string>
+    <string name="bill">الفاتورة</string>
+    <string name="table">طاولة</string>
+    <string name="wlc">مرحبا بعودتك </string>
+    <string name="log_out">تسجيل الخروج</string>
+    <string name="login_dialog_text">جاري تسجيل الدخول …</string>
+    <string name="logout_dialog_text">جاري تسجيل الخروح …</string>
+    <string name="login_error">حدث خطأ غير متوقع. يرجى محاولة تسجيل الدخول مرة أخرى.</string>
+    <string name="login_successfully">تم تسجيل الدخول بنجاح</string>
+    <string name="areyousure">هل انت متأكد؟</string>
+    <string name="logoutareyousure">هل أنت متأكد من تسجيل الخروج؟ سوف تحتاج إلى تسجيل الدخول مرة أخرى لتلقي الطلبات.</string>
+</resources>

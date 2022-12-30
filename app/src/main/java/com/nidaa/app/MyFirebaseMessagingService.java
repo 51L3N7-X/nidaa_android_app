@@ -1,4 +1,4 @@
-package com.example.myapplication;//package com.example.myapplication;
+package com.nidaa.app;//package com.example.myapplication;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -6,19 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -31,8 +24,15 @@ import androidx.work.WorkerParameters;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import org.w3c.dom.Text;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -41,7 +41,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onCreate() {
+//        Log.e("test" , "tt");
         super.onCreate();
+    }
+
+    public MyFirebaseMessagingService() {
+        super();
     }
 
     // [START receive_message]
@@ -55,7 +60,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
+            Map<String, String> data = remoteMessage.getData();
+            String order = data.get("body");
+            String table = data.get("title");
+
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            Intent intent = new Intent("message");
+            intent.putExtra("order", order);
+            intent.putExtra("table", table);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            sendNotification(order, table);
+            SharedPreferences sp = getSharedPreferences("views", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            String arr = sp.getString("views", "");
+            Gson gson = new Gson();
+            List<Card> views;
+            if (!arr.isEmpty()) {
+                Type type = new TypeToken<List<Card>>() {
+                }.getType();
+                views = gson.fromJson(arr, type);
+            } else {
+                views = new ArrayList<Card>();
+            }
+            views.add(new Card(order, table));
+            arr = gson.toJson(views);
+            Log.e("tt", arr);
+            editor.putString("views", arr);
+            editor.apply();
+
+
+//            if (remoteMessage.getNotification().getBody() != null) {
+//
+//            }
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
                 scheduleJob();
@@ -96,8 +132,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //            });
             Intent intent = new Intent("message");
             intent.putExtra("order", remoteMessage.getNotification().getBody());
-            intent.putExtra("table" , remoteMessage.getNotification().getTitle());
+            intent.putExtra("table", remoteMessage.getNotification().getTitle());
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             String notificationBody = remoteMessage.getNotification().getBody();
             String notificationTitle = remoteMessage.getNotification().getTitle();
@@ -152,7 +189,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotification(String messageTitle, String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_IMMUTABLE);
 
         String channelId = "fcm_default_channel";
@@ -164,13 +201,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent)
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+                        .setSmallIcon(R.drawable.notification)
+                        .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+//                        .setNumber(++i);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Since android Oreo notification channel is needed.
+//         Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Orders Notifications",
@@ -178,10 +218,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             channel.enableVibration(true);
             channel.enableLights(true);
             channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            channel.setImportance(NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
+        Date date = new Date();
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify((int) date.getTime()/* ID of notification */, notificationBuilder.build());
     }
 
     private void addCard(String name, String table) {
