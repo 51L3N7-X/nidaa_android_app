@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#804fc4"
+    tools:context=".KitchenActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/gird_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <!--         <Button-->
+    <!--        style="@style/Widget.Material3.CardView.Filled"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="200sp"-->
+    <!--        android:layout_columnWeight="1"-->
+    <!--        android:layout_margin="7sp"-->
+    <!--        android:text="button"-->
+    <!--        android:textSize="18sp"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        android:fontFamily="@font/muli_black"-->
+    <!--        />-->
+
+
+</RelativeLayout>

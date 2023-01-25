@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 class LoginDialog {
-    private Activity activity;
+    private final Activity activity;
     private AlertDialog dialog;
 
     LoginDialog(Activity MainActivity) {

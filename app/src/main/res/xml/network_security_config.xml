@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+<!--            <certificates src="user" overridePins="true" />-->
+        </trust-anchors>
+    </base-config>
+    <debug-overrides>
+        <trust-anchors>
+<!--            <certificates src="user" />-->
+        </trust-anchors>
+    </debug-overrides>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">localhost</domain>
-        <domain includeSubdomains="true">192.168.1.103</domain>
-    </domain-config>
+    <domain includeSubdomains="true">localhost</domain>
+    <domain includeSubdomains="true">192.168.1.103</domain>
+        <domain includeSubdomains="true">*</domain>
+</domain-config>
 </network-security-config>

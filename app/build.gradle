@@ -13,7 +13,7 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-        resConfigs "en" , "ar"
+        resConfigs "en", "ar"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,11 +36,13 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
 //    implementation ('io.socket:socket.io-client:2.1.0') {
 //        // excluding org.json which is provided by Android
 //        exclude group: 'org.json', module: 'json'
 //    }
-
+    def room_version = "2.4.3"
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
 //    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -53,15 +55,14 @@ dependencies {
 
 
     // Import the Firebase BoM
-//    implementation platform('com.google.firebase:firebase-bom:30.5.0')
+    implementation platform('com.google.firebase:firebase-bom:30.5.0')
 
     // When using the BoM, you don't specify versions in Firebase library dependencies
 
     // Add the dependency for the Firebase SDK for Google Analytics
     implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-messaging-directboot:20.2.0'
+    implementation 'com.google.firebase:firebase-messaging-directboot:23.1.1'
 //    implementation 'com.github.judemanutd:autostarter:1.1.0'
-
 
 
     // TODO: Add the dependencies for any other Firebase products you want to use
@@ -71,5 +72,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'com.google.code.gson:gson:2.10'
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 
 }

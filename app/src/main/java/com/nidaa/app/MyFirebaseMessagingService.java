@@ -1,9 +1,11 @@
 package com.nidaa.app;//package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +13,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -34,36 +35,24 @@ import java.util.List;
 import java.util.Map;
 
 
+@SuppressLint("MissingFirebaseInstanceTokenRefresh")
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
-    private View view;
-
-    @Override
-    public void onCreate() {
-//        Log.e("test" , "tt");
-        super.onCreate();
-    }
 
     public MyFirebaseMessagingService() {
         super();
     }
 
-    // [START receive_message]
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
 
-
-        // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Map<String, String> data = remoteMessage.getData();
             String order = data.get("body");
             String table = data.get("title");
-
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             Intent intent = new Intent("message");
             intent.putExtra("order", order);
@@ -80,118 +69,31 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }.getType();
                 views = gson.fromJson(arr, type);
             } else {
-                views = new ArrayList<Card>();
+                views = new ArrayList<>();
             }
             views.add(new Card(order, table));
             arr = gson.toJson(views);
             Log.e("tt", arr);
             editor.putString("views", arr);
             editor.apply();
-
-
-//            if (remoteMessage.getNotification().getBody() != null) {
-//
-//            }
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob();
-            } else {
-                // Handle message within 10 seconds
-                handleNow();
-            }
-
+            scheduleJob();
         }
-
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-//            Handler handler = new Handler(Looper.getMainLooper());
-//            handler.post(new Runnable() {
-//                public void run() {
-//                    Log.e("t", "test test etsdtetet");
-//                Toast.makeText(getApplicationContext(), "FCM!!", Toast.LENGTH_SHORT).show();
-//                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//
-//                    View view = inflater.inflate(R.layout.card, null);
-//                    View MainViwe = inflater.inflate(R.layout.activity_main, null);
-//                    LinearLayout layout = (LinearLayout) MainViwe.findViewById(R.id.container);
-//                    TextView order = view.findViewById(R.id.order);
-//                    TextView tableNumber = view.findViewById(R.id.textView);
-//                    Button done = view.findViewById(R.id.done);
-//
-//                    order.setText(remoteMessage.getNotification().getBody() );
-//                    order.setText(remoteMessage.getNotification().getTitle());
-//                    done.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            layout.removeView(view);
-//                        }
-//                    });
-//                    layout.addView(view);
-////                    addCard(remoteMessage.getNotification().getBody() , remoteMessage.getNotification().getTitle());
-//                }
-//            });
-            Intent intent = new Intent("message");
-            intent.putExtra("order", remoteMessage.getNotification().getBody());
-            intent.putExtra("table", remoteMessage.getNotification().getTitle());
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            String notificationBody = remoteMessage.getNotification().getBody();
-            String notificationTitle = remoteMessage.getNotification().getTitle();
-
-            if (remoteMessage.getNotification().getBody() != null) {
-                sendNotification(notificationBody, notificationTitle);
-            }
-        }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
-    // [END receive_message]
-
-    // [START on_new_token]
-
-    /**
-     * There are two scenarios when onNewToken is called:
-     * 1) When a new token is generated on initial app startup
-     * 2) Whenever an existing token is changed
-     * Under #2, there are three scenarios when the existing token is changed:
-     * A) App is restored to a new device
-     * B) User uninstalls/reinstalls the app
-     * C) User clears app data
-     */
-    @Override
-    public void onNewToken(@NonNull String token) {
-        Log.d(TAG, "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // FCM registration token to your app server.
-        sendRegistrationToServer(token);
-    }
-    // [END on_new_token]
 
     private void scheduleJob() {
-        // [START dispatch_job]
         OneTimeWorkRequest work = new OneTimeWorkRequest.Builder(MyWorker.class)
                 .build();
         WorkManager.getInstance(this).beginWith(work).enqueue();
-        // [END dispatch_job]
-    }
-
-    private void handleNow() {
-        Log.d(TAG, "Short lived task is done.");
-    }
-
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
     }
 
     private void sendNotification(String messageTitle, String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_IMMUTABLE);
+        Intent intent = new Intent(this, WaiterActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 , intent,  PendingIntent.FLAG_IMMUTABLE);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(intent);
 
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0 , PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         String channelId = "fcm_default_channel";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
@@ -226,9 +128,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify((int) date.getTime()/* ID of notification */, notificationBuilder.build());
     }
 
-    private void addCard(String name, String table) {
-
-    }
 
     public static class MyWorker extends Worker {
 
