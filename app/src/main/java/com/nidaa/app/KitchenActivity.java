@@ -1,41 +1,37 @@
 package com.nidaa.app;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.GridLayout;
-import android.widget.GridView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nidaa.app.Database.DatabaseClass;
 import com.nidaa.app.EntityClass.Table;
-import com.nidaa.app.EntityClass.User;
 import com.nidaa.app.TableDao.TableDao;
-import com.nidaa.app.UserDao.UserDao;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -49,29 +45,48 @@ public class KitchenActivity extends AppCompatActivity implements RecyclerViewAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kitchen);
-//        ViewGroup mainGridButton = (ViewGroup) gridLayout.getChildAt(0);
-//        mainGridButton.setVisibility(View.GONE);
-//        mainGridButton.setTag(1);
 
-        SharedPreferences kitchenSharedPreferences = getSharedPreferences("kitchen_data", Context.MODE_PRIVATE);
+
         DatabaseClass db = Room.databaseBuilder(getApplicationContext(), DatabaseClass.class, "tables").build();
         TableDao tableDao = db.tableDao();
 
         Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                final List<Table> tables = tableDao.getAll();
+        executor.execute(() -> {
+            final List<Table> tables = tableDao.getAll();
 
-                RecyclerView recyclerView = findViewById(R.id.gird_view);
-                int numberOfColumns = 2;
-                recyclerView.setLayoutManager(new GridLayoutManager(KitchenActivity.this, numberOfColumns));
-                adapter = new RecyclerViewAdapter(KitchenActivity.this, tables);
-                adapter.setClickListener(KitchenActivity.this);
-                recyclerView.setAdapter(adapter);
+            RecyclerView recyclerView = findViewById(R.id.gird_view);
+            int numberOfColumns = 2;
+            recyclerView.setLayoutManager(new GridLayoutManager(KitchenActivity.this, numberOfColumns));
+            adapter = new RecyclerViewAdapter(KitchenActivity.this, tables);
+            adapter.setClickListener(KitchenActivity.this);
+            recyclerView.setAdapter(adapter);
 
-            }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.user_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.log_out) {
+            new MaterialAlertDialogBuilder(KitchenActivity.this)
+                    .setTitle(R.string.areyousure)
+                    .setMessage(R.string.logoutareyousure)
+                    .setPositiveButton("LOGOUT", (dialogInterface, ii) -> {
+                        LogOut logOut = new LogOut();
+                        logOut.start();
+
+                    }).setNegativeButton("CANCEL", (dialogInterface, i) -> {
+
+
+                    }).show();
+        }
+        return true;
     }
 
     @Override
@@ -80,10 +95,18 @@ public class KitchenActivity extends AppCompatActivity implements RecyclerViewAd
             SharedPreferences kitchenSharedPreferences = getSharedPreferences("kitchen_data", Context.MODE_PRIVATE);
             String restaurant_name = kitchenSharedPreferences.getString("restaurant_name", "");
 //        Toast.makeText(this, adapter.getItem(position), Toast.LENGTH_SHORT).show();
+            int table = Integer.parseInt(adapter.getItem(position));
+            int groupSize = 5;
+            int groupNumber = (int) Math.ceil(table / (double) groupSize);
+            String group = (groupNumber - 1) * groupSize + 1 + "_" + groupNumber * groupSize;
+            Log.e("group:" , group);
+            Log.e("groupNumber" , String.valueOf(groupNumber));
             JSONObject data = new JSONObject();
             data.put("restaurant_name", restaurant_name);
             data.put("password", kitchenSharedPreferences.getString("password", ""));
-            data.put("sendTo", restaurant_name + "_" + adapter.getItem(position));
+            data.put("title" , "المطبخ");
+            data.put("body" , adapter.getItem(position));
+            data.put("sendTo", restaurant_name + "_" + group);
             Log.e("data:", data.toString());
             new SendThread(data.toString(), "https://www.nidaa.online/api/send").start();
         } catch (JSONException e) {
@@ -93,8 +116,8 @@ public class KitchenActivity extends AppCompatActivity implements RecyclerViewAd
     }
 
     class SendThread extends Thread {
-        private String jsonData;
-        private String url;
+        private final String jsonData;
+        private final String url;
 
         public SendThread(String jsonData, String url) {
             this.jsonData = jsonData;
@@ -110,15 +133,14 @@ public class KitchenActivity extends AppCompatActivity implements RecyclerViewAd
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
-                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
 
                 // Add the data to the request
-                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                os.writeBytes(jsonData);
-                os.flush();
-                os.close();
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream() , StandardCharsets.UTF_8));
+                bw.write(jsonData);
+                bw.flush();
+                bw.close();
 
-                int status = conn.getResponseCode();
                 BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 StringBuilder sb = new StringBuilder();
                 String line;
@@ -133,21 +155,26 @@ public class KitchenActivity extends AppCompatActivity implements RecyclerViewAd
                 // Send the request and read the response
 
                 // Update the UI with the result
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(KitchenActivity.this, message, Toast.LENGTH_LONG).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(KitchenActivity.this, message, Toast.LENGTH_LONG).show());
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(KitchenActivity.this, "Error happened", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                runOnUiThread(() -> Toast.makeText(KitchenActivity.this, "Error happened", Toast.LENGTH_SHORT).show());
             }
+        }
+    }
+
+    class LogOut extends Thread {
+        @Override
+        public void run() {
+            SharedPreferences kitchenSharedPreferences = getSharedPreferences("kitchen_data", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = kitchenSharedPreferences.edit();
+            DatabaseClass db = Room.databaseBuilder(getApplicationContext(), DatabaseClass.class, "tables").build();
+            TableDao tableDao = db.tableDao();
+            tableDao.deleteAllTables();
+            editor.clear().apply();
+            Intent intent = new Intent(KitchenActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 

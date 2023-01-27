@@ -1,6 +1,5 @@
 package com.nidaa.app;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
@@ -24,34 +23,29 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.nidaa.app.Database.DatabaseClass;
 import com.nidaa.app.EntityClass.Table;
-import com.nidaa.app.EntityClass.User;
 import com.nidaa.app.TableDao.TableDao;
-import com.nidaa.app.UserDao.UserDao;
 
 
 public class LoginActivity extends AppCompatActivity {
     Button login_btn;
     TextInputLayout et_restaurant_name, et_username, et_password;
     RadioGroup login_as;
-    String token;
 
     private static final String TAG = "MyActivity";
 
@@ -59,25 +53,26 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        FetchData fetchData = new FetchData();
-//        fetchData.start();
-        SharedPreferences sharedPreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE);
-        String restaurant_name = sharedPreferences.getString("restaurant_name", null);
-        String username = sharedPreferences.getString("username", null);
-        String password = sharedPreferences.getString("password", null);
-        String token = sharedPreferences.getString("token", null);
+        SharedPreferences waiterSharedPreferences = getSharedPreferences("user_data", Context.MODE_PRIVATE);
+        SharedPreferences kitchenSharedPreferences = getSharedPreferences("kitchen_data" , Context.MODE_PRIVATE);
+        String waiter_restaurant_name = waiterSharedPreferences.getString("restaurant_name", null);
+        String waiterUsername = waiterSharedPreferences.getString("username", null);
+        String waiterPassword = waiterSharedPreferences.getString("password", null);
+        String kitchen_restaurant_name = kitchenSharedPreferences.getString("restaurant_name" , null);
+        String kitchenPassword = kitchenSharedPreferences.getString("password" , null);
+        String token = waiterSharedPreferences.getString("token", null);
         if (token == null) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-                @Override
-                public void onComplete(@NonNull Task<String> task) {
-                    Log.e("token :", task.getResult());
-                    editor.putString("token", task.getResult()).apply();
-                }
+            SharedPreferences.Editor editor = waiterSharedPreferences.edit();
+            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                Log.e("token :", task.getResult());
+                editor.putString("token", task.getResult()).apply();
             });
         }
-        if (restaurant_name != null && username != null && password != null) {
+        if (waiter_restaurant_name != null && waiterUsername != null && waiterPassword != null) {
             startActivity(new Intent(LoginActivity.this, WaiterActivity.class));
+            finish();
+        } else if (kitchen_restaurant_name != null & kitchenPassword != null) {
+            startActivity(new Intent(LoginActivity.this , KitchenActivity.class));
             finish();
         }
 
@@ -135,29 +130,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-//    class FetchData extends Thread {
-//        @Override
-//        public void run() {
-//            super.run();
-//            DatabaseClass db = Room.databaseBuilder(getApplicationContext(), DatabaseClass.class, "users").build();
-//            UserDao userDao = db.userDao();
-//            userDao.insertUser(new User("testdre", "kxxxey"));
-////            String test = userDao.findByName("test").token;
-////            Log.e("key" , test);
-//            List<User> users = userDao.getAll();
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                users.forEach(user -> {
-//                    Log.e("username:", user.username);
-//                    Log.e("token:", user.token);
-//                    Log.e("key:", String.valueOf(user.key));
-//                });
-//            }
-//            userDao.deleteAllUsers();
-//            List<User> usersx = userDao.getAll();
-//            Log.e("length:", String.valueOf(usersx.size()));
-//        }
-//    }
-
     public class LoginExecutor {
         private final Context context;
         private final Executor executor;
@@ -183,7 +155,7 @@ public class LoginActivity extends AppCompatActivity {
                     connection.setRequestProperty("Accept", "application/json");
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
-                    OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream() , StandardCharsets.UTF_8));
                     writer.write(data);
                     writer.flush();
                     writer.close();
@@ -242,14 +214,14 @@ public class LoginActivity extends AppCompatActivity {
                             SharedPreferences.Editor kEditor = kitchenSharedPreferences.edit();
                             DatabaseClass db = Room.databaseBuilder(getApplicationContext(), DatabaseClass.class, "tables").build();
                             TableDao tableDao = db.tableDao();
-                            JSONArray tablesFromApi = SecData.getJSONArray("tables");
-                            int length = tablesFromApi.length();
+                            String max = SecData.getString("max");
+                            int length = Integer.parseInt(max);
                             CountDownLatch latch = new CountDownLatch(length);
-                            for (int i = 0; i < length; i++) {
-                                String table = tablesFromApi.getString(i);
-                                tableDao.insertTable(new Table(table));
-                                Log.e("test", table);
+                            for (int i = 1; i <= length; i++) {
+                                tableDao.insertTable(new Table(String.valueOf(i)));
+                                Log.e("i:" ,String.valueOf(i));
                                 latch.countDown();
+
                             }
                             latch.await();
                             kEditor.putString("restaurant_name", SecData.getString("restaurant_name"));

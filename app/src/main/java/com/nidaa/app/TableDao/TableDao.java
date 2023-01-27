@@ -29,5 +29,5 @@ public interface TableDao {
     void delete(Table table);
 
     @Query("DELETE FROM Tables")
-    void deleteAllUsers();
+    void deleteAllTables();
 }

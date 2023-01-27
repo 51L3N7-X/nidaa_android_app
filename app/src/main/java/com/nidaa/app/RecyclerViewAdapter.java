@@ -6,27 +6,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.nidaa.app.EntityClass.Table;
-import com.nidaa.app.EntityClass.User;
 
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private List<Table> data;
-    private LayoutInflater inflater;
-    private Context context;
+    private final List<Table> data;
+    private final LayoutInflater inflater;
     private ItemClickListener clickListener;
 
 
     public RecyclerViewAdapter(Context context, List<Table> data) {
         this.data = data;
-        this.context = context;
         this.inflater = LayoutInflater.from(context);
     }
 

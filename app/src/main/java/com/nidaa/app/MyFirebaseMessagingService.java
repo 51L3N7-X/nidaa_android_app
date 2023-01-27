@@ -29,10 +29,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
@@ -51,12 +53,32 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (remoteMessage.getData().size() > 0) {
             Map<String, String> data = remoteMessage.getData();
-            String order = data.get("body");
-            String table = data.get("title");
+            String body = data.get("body");
+            String order;
+            switch (Objects.requireNonNull(body)) {
+                case "order":
+                    order = getString(R.string.order);
+                    break;
+                case "embers":
+                    order = getString(R.string.embers);
+                    break;
+                case "bill":
+                    order = getString(R.string.bill);
+                    break;
+                case "kitchen":
+                    order = getString(R.string.kitchen);
+                    break;
+                default:
+                    order = "order";
+                    break;
+            }
+            @SuppressLint("SimpleDateFormat") String time = new SimpleDateFormat("hh:mm:ss a").format(new Date());
+            String table = getString(R.string.table) + data.get("table");
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             Intent intent = new Intent("message");
             intent.putExtra("order", order);
             intent.putExtra("table", table);
+            intent.putExtra("time" , time);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
             sendNotification(order, table);
             SharedPreferences sp = getSharedPreferences("views", Context.MODE_PRIVATE);
@@ -71,7 +93,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } else {
                 views = new ArrayList<>();
             }
-            views.add(new Card(order, table));
+            views.add(new Card(order, table , time));
             arr = gson.toJson(views);
             Log.e("tt", arr);
             editor.putString("views", arr);
@@ -88,12 +110,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotification(String messageTitle, String messageBody) {
         Intent intent = new Intent(this, WaiterActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 , intent,  PendingIntent.FLAG_IMMUTABLE);
+
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntentWithParentStack(intent);
 
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0 , PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         String channelId = "fcm_default_channel";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =

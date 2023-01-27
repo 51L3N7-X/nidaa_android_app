@@ -57,7 +57,7 @@ public class WaiterActivity extends AppCompatActivity {
             List<Card> views = gson.fromJson(arr, type);
             int length = views.size();
             for (int i = 0; i < length; i++) {
-                addCard(views.get(i).order, views.get(i).table);
+                addCard(views.get(i).order, views.get(i).table, views.get(i).time);
             }
         }
     }
@@ -67,7 +67,8 @@ public class WaiterActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String order = intent.getStringExtra("order");
             String table = intent.getStringExtra("table");
-            addCard(order, table);
+            String time = intent.getStringExtra("time");
+            addCard(order, table, time);
         }
     };
 
@@ -81,7 +82,8 @@ public class WaiterActivity extends AppCompatActivity {
             View v = layout.getChildAt(i);
             String order = ((TextView) v.findViewById(R.id.order)).getText().toString();
             String table = ((TextView) v.findViewById(R.id.table)).getText().toString();
-            Card card = new Card(order, table);
+            String time = ((TextView) v.findViewById(R.id.time)).getText().toString();
+            Card card = new Card(order, table, time);
             list.add(card);
         }
         Gson gson = new Gson();
@@ -125,15 +127,17 @@ public class WaiterActivity extends AppCompatActivity {
         return true;
     }
 
-    private void addCard(String name, String table) {
-        View view = getLayoutInflater().inflate(R.layout.card, null);
+    private void addCard(String name, String table, String time) {
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.card, null);
         LinearLayout layout = findViewById(R.id.container);
         TextView order = view.findViewById(R.id.order);
         TextView tableNumber = view.findViewById(R.id.table);
+        TextView timeText = view.findViewById(R.id.time);
         Button done = view.findViewById(R.id.done);
 
         order.setText(name);
         tableNumber.setText(table);
+        timeText.setText(time);
         done.setOnClickListener(v -> layout.removeView(view));
         layout.addView(view);
     }
