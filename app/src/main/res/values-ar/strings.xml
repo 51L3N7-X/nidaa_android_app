@@ -15,8 +15,10 @@
     <string name="table">طاولة</string>
     <string name="wlc">مرحبا بعودتك </string>
     <string name="log_out">تسجيل الخروج</string>
+    <string name="update_data">تحديث البيانات</string>
     <string name="login_dialog_text">جاري تسجيل الدخول …</string>
     <string name="logout_dialog_text">جاري تسجيل الخروح …</string>
+    <string name="update_data_dialog_text">جاري تحديث البيانات …</string>
     <string name="login_error">حدث خطأ غير متوقع. يرجى محاولة تسجيل الدخول مرة أخرى.</string>
     <string name="login_successfully">تم تسجيل الدخول بنجاح</string>
     <string name="areyousure">هل انت متأكد؟</string>

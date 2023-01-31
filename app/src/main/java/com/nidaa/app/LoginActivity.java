@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         public void execute(String data, String login_as) {
-            handler.post(() -> loginDialog.startLoginDialog(R.layout.login_dialog));
+            handler.post(() -> loginDialog.startLoginDialog(R.layout.login_dialog , R.string.login_dialog_text));
 
             executor.execute(() -> {
                 try {

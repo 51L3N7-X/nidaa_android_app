@@ -15,8 +15,10 @@
     <string name="table">Table</string>
     <string name="wlc">Welcome Back</string>
     <string name="log_out">LOGOUT</string>
+    <string name="update_data">Update Data</string>
     <string name="login_dialog_text">Logging in …</string>
     <string name="logout_dialog_text">Logging out …</string>
+    <string name="update_data_dialog_text">Updating Data …</string>
     <string name="login_error">An unexpected error occurred. Please try to logging in again.</string>
     <string name="login_successfully">Logged in successfully</string>
     <string name="areyousure">Are You Sure?</string>
